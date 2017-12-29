@@ -19,8 +19,6 @@ $(document).ready(function() {
             method: "GET"
         })
         .done(function(response) {
-            console.log(queryURL);
-            console.log(response);
             
             // Storing the data from AJAX request in the results variable
             var results = response.data
@@ -49,8 +47,8 @@ $(document).ready(function() {
                 
                 // Prepending the gifDiv to the HTML page in the "#gifs-appear-here" div
                 $("#gifs-appear-here").prepend(gifDiv);
-                pausegif();
             };
+            pausegif();
         });
     };
 
@@ -58,6 +56,7 @@ $(document).ready(function() {
         $('.container-fluid').on("click","img",function(){
             var state = $(this).attr("data-state");
             if (state === "animate") {
+                console.log($(this).attr("data-gif_still"));
                 $(this).attr("src", $(this).attr("data-gif_still"));
                 $(this).attr("data-state","still")
             } else if (state === "still") {
