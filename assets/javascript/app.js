@@ -1,18 +1,18 @@
 $(document).ready(function() {
 
     // Initial array of gifs
-    var gifs = ["dog", "cat", "rabbit", "hamster", "skunk"];
+    var gifs = ["dog", "cat", "rabbit", "hamster", "skunk", "goldfish","bird","ferret","turtile","sugar glider","chinchilla","hedgehog","hermit crab","gerbil","pygmy goat","chicken","capybara","teacup pig","serval","salamander","frog"];
 
 
     function displaygif() {
         // Grabbing and storing the data-gif property value from the button
         var gif = $(this).attr("data-gif");
+        var rating = "g";
 
         // Constructing a queryURL using the gif name
         var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
-        gif + "&api_key=dc6zaTOxFJmzC&limit=10";
-
-        
+        gif + "&api_key=dc6zaTOxFJmzC&limit=10" + 
+        "&rating="+rating;
         
         $.ajax({
             url: queryURL,
@@ -29,7 +29,7 @@ $(document).ready(function() {
             for (var i = 0; i < results.length; i++) {
                 
                 // Creating and storing a div tag
-                var gifDiv = $("<div>");
+                var gifDiv = $("<div class='pull-left'>");
                 
                 // Creating a paragraph tag with the result item's rating
                 var p = $("<p>").text("Rating: " + results[i].rating);
@@ -39,6 +39,9 @@ $(document).ready(function() {
                 
                 // Setting the src attribute of the image to a property pulled off the result item
                 gifImage.attr("src", results[i].images.fixed_height.url);
+                gifImage.attr("data-gif", results[i].images.fixed_height.url);
+                gifImage.attr("data-gif_still", results[i].images.fixed_height_still.url);
+                gifImage.attr("data-state", "animate");
                 
                 // Appending the paragraph and image tag to the gifDiv
                 gifDiv.append(p);
@@ -46,9 +49,24 @@ $(document).ready(function() {
                 
                 // Prepending the gifDiv to the HTML page in the "#gifs-appear-here" div
                 $("#gifs-appear-here").prepend(gifDiv);
-            }
+                pausegif();
+            };
         });
     };
+
+    function pausegif() {
+        $('.container-fluid').on("click","img",function(){
+            var state = $(this).attr("data-state");
+            if (state === "animate") {
+                $(this).attr("src", $(this).attr("data-gif_still"));
+                $(this).attr("data-state","still")
+            } else if (state === "still") {
+                $(this).attr("src", $(this).attr("data-gif"));
+                $(this).attr("data-state","animate");
+            }
+        });
+    }
+
 
     function renderButtons() {
         
@@ -60,7 +78,7 @@ $(document).ready(function() {
         for (var i = 0; i < gifs.length; i++) {
 
             // Dynamically create buttons for each gif in array
-            var a = $("<button>");
+            var a = $("<button class='btn btn-primary'>");
             // Adding gif class
             a.addClass("gif");
             // Adding data-gif attribute
@@ -77,7 +95,7 @@ $(document).ready(function() {
         // This line grabs the input from the textbox
         var gif = $("#gif-input").val().trim();
 
-        // Adding gif form the textbox to our array
+        // Adding gif from the textbox to our array
         gifs.push(gif);
 
         // Calling renderButtons which handles the processing of our gifs array
@@ -89,5 +107,6 @@ $(document).ready(function() {
 
     // Calling the renderButtons function to display the initial buttons
     renderButtons();
+    
         
 });
